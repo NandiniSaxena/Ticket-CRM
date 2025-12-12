@@ -11,7 +11,7 @@ class TicketController extends Controller
 {
     public function create()
     {
-        // You can pass any props, but auth.user is available by default.
+
         return Inertia::render('User/CreateTicket');
     }
 
@@ -119,7 +119,7 @@ public function update(Request $request, $id)
         'subject'     => 'required|string|max:255',
         'description' => 'required|string',
         'priority'    => 'required|in:low,medium,high',
-        'team'        => 'required|in:Support,Technical,Billing,Sales', // ← THIS WAS MISSING!
+        'team'        => 'required|in:Support,Technical,Billing,Sales',
     ]);
 
     $updated = DB::table('tickets')

@@ -149,7 +149,7 @@ export default function Completed() {
                 </div>
             </div>
 
-            {/* TICKET MODAL - PERFECT WRAPPING */}
+            {/* TICKET  */}
             {showModal && selectedTicket && (
                 <div className="modal fade show" style={{display: "block", backgroundColor: "rgba(0,0,0,0.5)"}} tabIndex="-1">
                     <div className="modal-dialog modal-lg">

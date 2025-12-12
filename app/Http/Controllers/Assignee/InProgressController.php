@@ -17,7 +17,6 @@ class InProgressController extends Controller
 
         $assigneeId = $user->id;
 
-        // === GET ALL TICKET COUNTS FOR SIDEBAR ===
         $total      = DB::table('tickets')->where('assignee_id', $assigneeId)->whereNull('deleted_at')->count();
         $inprogress = DB::table('tickets')->where('assignee_id', $assigneeId)->where('status', 'inprogress')->whereNull('deleted_at')->count();
         $pending    = DB::table('tickets')->where('assignee_id', $assigneeId)->where('status', 'pending')->whereNull('deleted_at')->count();
@@ -33,7 +32,6 @@ class InProgressController extends Controller
             'waiting'    => $pending + $onhold,
         ];
 
-        // === GET ONLY IN PROGRESS TICKETS ===
         $tickets = DB::table('tickets as t')
             ->leftJoin('users as u', 't.requester_id', '=', 'u.id')
             ->where('t.assignee_id', $assigneeId)
@@ -45,7 +43,7 @@ class InProgressController extends Controller
 
         return Inertia::render('Assignee/InProgress', [
             'tickets' => $tickets,
-            'stats'   => $stats,   // Now sidebar shows correct counts!
+            'stats'   => $stats,
         ]);
     }
 }

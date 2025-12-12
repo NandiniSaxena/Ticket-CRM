@@ -44,7 +44,7 @@ class MyTicketsController extends Controller
 
         return Inertia::render('Assignee/MyTickets', [
             'tickets' => $tickets,
-            'stats'   => $stats,   // Now "All My Tickets" shows correct live counts!
+            'stats'   => $stats,   
         ]);
     }
 }

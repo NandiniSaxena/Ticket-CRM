@@ -32,7 +32,6 @@ export default function AllTickets() {
     const handleUpdate = (e) => {
         e.preventDefault();
 
-        // Use PATCH (not POST!)
         patch(route("ticket.update", selectedTicket.id), {
             preserveScroll: true,
             onSuccess: () => {
@@ -64,7 +63,6 @@ export default function AllTickets() {
         });
     };
 
-    // Load Bootstrap once
     useEffect(() => {
         if (!window.bootstrap) {
             const script = document.createElement("script");
@@ -108,7 +106,7 @@ export default function AllTickets() {
                 }
             `}</style>
 
-            {/* SIDEBAR & TOPBAR (same as before) */}
+            {/* SIDEBAR & TOPBAR  */}
             <div className={`sidebar ${sidebarOpen ? "show" : ""}`}>
                 <h4 className="text-center fw-bold mb-4">Helpdesk</h4>
                 <Link href="/dashboard">Dashboard</Link>

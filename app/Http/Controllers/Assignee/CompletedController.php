@@ -45,7 +45,7 @@ class CompletedController extends Controller
 
         return Inertia::render('Assignee/Completed', [
             'tickets' => $tickets,
-            'stats'   => $stats,   // Now sidebar shows correct counts!
+            'stats'   => $stats,   
         ]);
     }
 }

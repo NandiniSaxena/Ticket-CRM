@@ -135,7 +135,7 @@ export default function Pending() {
                 </div>
             </div>
 
-            {/* TICKET MODAL - PERFECT WRAPPING */}
+            {/* TICKET MODAL */}
             {showModal && selectedTicket && (
                 <div className="modal fade show" style={{display: "block", backgroundColor: "rgba(0,0,0,0.5)"}} tabIndex="-1">
                     <div className="modal-dialog modal-lg">

@@ -45,7 +45,7 @@ class PendingController extends Controller
 
         return Inertia::render('Assignee/Pending', [
             'tickets' => $tickets,
-            'stats'   => $stats,   // Now sidebar shows correct counts!
+            'stats'   => $stats,   
         ]);
     }
 }

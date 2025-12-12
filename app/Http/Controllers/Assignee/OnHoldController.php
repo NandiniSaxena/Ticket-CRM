@@ -47,7 +47,7 @@ public function index()
 
     return Inertia::render('Assignee/OnHold', [
         'tickets' => $tickets,
-        'stats' => $stats,   // This is what was missing!
+        'stats' => $stats,   
     ]);
 }
 }

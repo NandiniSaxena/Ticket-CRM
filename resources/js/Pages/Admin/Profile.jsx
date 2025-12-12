@@ -53,7 +53,7 @@ export default function AdminProfile() {
                 @media (max-width: 991px) { .sidebar { left: -250px; } .sidebar.show { left: 0; } .topbar, .content { margin-left: 0; } }
             `}</style>
 
-            {/* SIDEBAR - 100% SAME */}
+            {/* SIDEBAR */}
             <div className={`sidebar ${sidebarOpen ? "show" : ""}`}>
                 <h4><i className="bi bi-shield-lock"></i> Admin Panel</h4>
 

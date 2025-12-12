@@ -392,7 +392,6 @@ export default function ManageAdmins() {
                 </div>
             </div>
 
-            {/* ALL OTHER MODALS (Edit, Password, Remove, Delete) */}
             {admins.map(a => (
                 <React.Fragment key={a.id}>
                     {/* Edit Modal */}
@@ -453,7 +452,6 @@ export default function ManageAdmins() {
                         </div>
                     </div>
 
-                    {/* Remove Rights Modal */}
                     <div className="modal fade" id={`removeModal${a.id}`} tabIndex="-1">
                         <div className="modal-dialog">
                             <form onSubmit={() => handleRemoveRights(a.id)}>

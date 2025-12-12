@@ -11,7 +11,7 @@ class LoginController extends Controller
 {
     public function show()
     {
-        return Inertia::render("Login"); // or just "Login" if it's in Pages root
+        return Inertia::render("Login"); 
     }
 
     public function login(Request $request)
@@ -25,7 +25,7 @@ class LoginController extends Controller
             $request->session()->regenerate();
 
             $user = Auth::user();
-            $role = $user->role; // Make sure your users table has 'role' column
+            $role = $user->role;
 
             // Redirect based on role
             return match ($role) {
