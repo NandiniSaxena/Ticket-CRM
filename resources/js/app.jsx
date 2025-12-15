@@ -2,7 +2,7 @@ import '../css/app.css';
 import './bootstrap';
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
-
+import { router } from '@inertiajs/react';
 
 import { createInertiaApp } from '@inertiajs/react';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
@@ -25,4 +25,11 @@ createInertiaApp({
     progress: {
         color: '#4B5563',
     },
+});
+router.on('before', (event) => {
+    if (!event.detail.visit.props.auth?.user) {
+        // If no user in props, force redirect to login
+        router.visit('/login', { replace: true });
+        event.preventDefault();
+    }
 });

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Head, Link, usePage, useForm, router } from "@inertiajs/react";
+import Dropdown from "@/Components/Dropdown";
 
 export default function Pending() {
     const { tickets, auth } = usePage().props;
@@ -190,20 +191,30 @@ export default function Pending() {
                     </div>
                     <div className="d-flex align-items-center">
                     <span className="fw-bold me-3">{fullName}</span>
-                    <div className="dropdown">
-                        <button className="btn btn-link text-dark p-0" data-bs-toggle="dropdown">
-                            <i className="bi bi-person-circle fs-3"></i>
-                        </button>
-                        <ul className="dropdown-menu dropdown-menu-end">
-                            <li className="dropdown-header text-center">
-                                <div className="fw-bold">{fullName}</div>
-                                <small>{user.email}</small>
-                            </li>
-                            <li><hr className="dropdown-divider"/></li>
-                            <li><Link href="/profile" className="dropdown-item">My Profile</Link></li>
-                            <li><Link method="post" href="/logout" as="button" className="dropdown-item text-danger">Logout</Link></li>
-                        </ul>
-                    </div>
+                     <Dropdown>
+            <Dropdown.Trigger>
+                <button
+                    type="button"
+                    className="btn btn-link text-dark p-0 border-0"
+                    style={{ background: "transparent", lineHeight: "1" }}
+                >
+                    <i className="bi bi-person-circle fs-3"></i>
+                </button>
+            </Dropdown.Trigger>
+
+            <Dropdown.Content align="right" width="220px">
+                <div className="px-4 py-3 border-bottom text-center">
+                    <div className="fw-bold">{user.name}</div>
+                    <small className="text-muted">{user.email}</small>
+                </div>
+                <Dropdown.Link href="/profile">
+                    My Profile
+                </Dropdown.Link>
+                <Dropdown.Link href="/logout" method="post" as="button" className="text-danger">
+                    Logout
+                </Dropdown.Link>
+            </Dropdown.Content>
+        </Dropdown>
                 </div>
                 </div>
 
@@ -261,7 +272,6 @@ export default function Pending() {
                                                             data-bs-toggle="modal"
                                                             data-bs-target={`#ticketModal${t.id}`}
                                                         >
-                                                            View
                                                             View
                                                         </button>
                                                     </td>

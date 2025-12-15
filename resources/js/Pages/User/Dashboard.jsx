@@ -1,10 +1,16 @@
 import React, { useState } from "react";
 import { Head, Link, usePage } from "@inertiajs/react";
+import Dropdown from "@/Components/Dropdown";
 
 export default function Dashboard() {
     const { auth, stats, recentTickets } = usePage().props;
 
-    const user = auth?.user || { name: "User", email: "user@example.com" };
+    const user = auth.user;
+
+    // if (!user) {
+    //     router.visit('/login', { replace: true });
+    //     return null;
+    // }
 
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
@@ -21,7 +27,6 @@ export default function Dashboard() {
     return (
         <>
             <Head title="Dashboard - Helpdesk" />
-
 
             <link
                 rel="stylesheet"
@@ -122,45 +127,49 @@ export default function Dashboard() {
                 <Link href="/profile">My Profile</Link>
             </div>
 
-            {/* TOPBAR */}
-            <div className="topbar d-flex align-items-center justify-content-between">
-                <div className="d-flex align-items-center">
-                    <span
-                        className="hamburger d-lg-none"
-                        role="button"
-                        onClick={toggleSidebar}
-                    >
-                        ☰
-                    </span>
-                    <strong>Dashboard / Overview</strong>
+            {/* TOPBAR - 100% RELIABLE DROPDOWN USING INERTIA'S DROPDOWN */}
+<div className="topbar d-flex align-items-center justify-content-between">
+    <div className="d-flex align-items-center">
+        <span
+            className="hamburger d-lg-none"
+            role="button"
+            onClick={toggleSidebar}
+        >
+            ☰
+        </span>
+        <strong>Dashboard / Overview</strong>
+    </div>
+
+    <div className="d-flex align-items-center">
+        <span className="fw-bold me-3">{user.name}</span>
+
+        {/* INERTIA DROPDOWN - ALWAYS WORKS IN REACT */}
+        <Dropdown>
+            <Dropdown.Trigger>
+                <button
+                    type="button"
+                    className="btn btn-link text-dark p-0 border-0"
+                    style={{ background: "transparent", lineHeight: "1" }}
+                >
+                    <i className="bi bi-person-circle fs-3"></i>
+                </button>
+            </Dropdown.Trigger>
+
+            <Dropdown.Content align="right" width="220px">
+                <div className="px-4 py-3 border-bottom text-center">
+                    <div className="fw-bold">{user.name}</div>
+                    <small className="text-muted">{user.email}</small>
                 </div>
-
-                <div className="d-flex align-items-center">
-                    <span className="fw-bold me-3">{user.name}</span>
-
-                    <div className="dropdown">
-                        <button className="btn btn-link" data-bs-toggle="dropdown">
-                            <i className="bi bi-person-circle fs-3 text-dark"></i>
-                        </button>
-
-                        <ul className="dropdown-menu dropdown-menu-end">
-                            <li className="dropdown-header text-center">
-                                <strong>{user.name}</strong>
-                                <br />
-                                <small>{user.email}</small>
-                            </li>
-                            <li><hr className="dropdown-divider" /></li>
-                            <li><Link className="dropdown-item" href="/profile">My Profile</Link></li>
-                            <li>
-                                <Link as="button" method="post" href="/logout" className="dropdown-item text-danger">
-                                    Logout
-                                </Link>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-
+                <Dropdown.Link href="/profile">
+                    My Profile
+                </Dropdown.Link>
+                <Dropdown.Link href="/logout" method="post" as="button" className="text-danger">
+                    Logout
+                </Dropdown.Link>
+            </Dropdown.Content>
+        </Dropdown>
+    </div>
+</div>
             {/* MAIN CONTENT */}
             <div className="content">
 
@@ -239,8 +248,8 @@ export default function Dashboard() {
                                             return (
                                                 <tr key={t.id}>
                                                     <td><strong>{index + 1}</strong></td>
-                                                    <td style={{ maxWidth: "200px" }}>{t.subject}</td>
-                                                    <td style={{ maxWidth: "300px", whiteSpace: "pre-wrap" }}>
+                                                    <td style={{ maxWidth: "200px", wordWrap: "break-word" }}>{t.subject}</td>
+                                                    <td style={{ maxWidth: "300px", whiteSpace: "pre-wrap", wordWrap: "break-word" }}>
                                                         {t.description}
                                                     </td>
                                                     <td>
@@ -287,6 +296,7 @@ export default function Dashboard() {
                     </div>
                 </div>
 
+                {/* MODALS - PERFECT WRAPPING */}
                 {recentTickets.map((t) => {
                     const statusBadge =
                         t.status === "completed"
@@ -305,41 +315,50 @@ export default function Dashboard() {
                             : t.status.charAt(0).toUpperCase() + t.status.slice(1);
 
                     return (
-                        <div key={t.id}>
-                            <div className="modal fade" id={`ticketModal${t.id}`} tabIndex="-1">
-                                <div className="modal-dialog modal-lg">
-                                    <div className="modal-content">
-                                        <div className="modal-header">
-                                            <h5 className="modal-title">
-                                                <i className="bi bi-ticket-perforated"></i> Ticket #{t.id} - {t.subject}
-                                            </h5>
-                                            <button className="btn-close" data-bs-dismiss="modal"></button>
-                                        </div>
+                        <div key={t.id} className="modal fade" id={`ticketModal${t.id}`} tabIndex="-1">
+                            <div className="modal-dialog modal-lg">
+                                <div className="modal-content">
+                                    <div className="modal-header">
+                                        <h5 className="modal-title w-100 text-center">
+                                            <strong>Ticket #{t.id}</strong>
+                                            <br />
+                                            <span style={{ fontSize: "1rem", wordBreak: "break-word" }}>
+                                                {t.subject}
+                                            </span>
+                                        </h5>
+                                        <button className="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
 
-                                        <div className="modal-body">
-                                            <div className="row">
-                                                <div className="col-md-8">
-                                                    <h6><strong>Full Description</strong></h6>
-                                                    <div className="bg-light p-4 rounded" style={{ whiteSpace: "pre-wrap" }}>
-                                                        {t.description}
-                                                    </div>
+                                    <div className="modal-body">
+                                        <div className="row">
+                                            <div className="col-md-8">
+                                                <h6><strong>Full Description</strong></h6>
+                                                <div
+                                                    className="bg-light p-4 rounded"
+                                                    style={{
+                                                        whiteSpace: "pre-wrap",
+                                                        wordBreak: "break-word",
+                                                        lineHeight: "1.7"
+                                                    }}
+                                                >
+                                                    {t.description || <em className="text-muted">No description provided.</em>}
                                                 </div>
+                                            </div>
 
-                                                <div className="col-md-4">
-                                                    <div className="p-3 border rounded shadow-sm">
-                                                        <p><strong>Status:</strong> <span className={`badge ${statusBadge}`}>{statusText}</span></p>
-                                                        <p><strong>Priority:</strong> {t.priority}</p>
-                                                        <p><strong>Team:</strong> {t.team || "Not Set"}</p>
-                                                        <p><strong>Created:</strong> {formatDate(t.created_at)}</p>
-                                                    </div>
+                                            <div className="col-md-4">
+                                                <div className="p-3 border rounded shadow-sm">
+                                                    <p><strong>Status:</strong> <span className={`badge ${statusBadge}`}>{statusText}</span></p>
+                                                    <p><strong>Priority:</strong> {t.priority}</p>
+                                                    <p><strong>Team:</strong> {t.team || "Not Set"}</p>
+                                                    <p><strong>Created:</strong> {formatDate(t.created_at)}</p>
                                                 </div>
                                             </div>
                                         </div>
+                                    </div>
 
-                                        <div className="modal-footer">
-                                            <Link href="/alltickets" className="btn btn-primary">Open All Tickets</Link>
-                                            <button className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                        </div>
+                                    <div className="modal-footer">
+                                        <Link href="/alltickets" className="btn btn-primary">Open All Tickets</Link>
+                                        <button className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                     </div>
                                 </div>
                             </div>

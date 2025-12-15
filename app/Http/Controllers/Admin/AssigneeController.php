@@ -34,46 +34,59 @@ class AssigneeController extends Controller
         ]);
     }
 
-    // app/Http/Controllers/Admin/AssigneeController.php
-
-public function store(Request $request)
-{
-    $request->validate([
-        'user_id' => 'required|exists:users,id',
-        'department' => 'required|in:Support,Technical,Billing,Sales',
-    ]);
-
-    $userId = $request->user_id;
-
-    // Delete all tickets created by this user (as requester)
-    DB::table('tickets')->where('requester_id', $userId)->delete();
-
-    // Update user to Assignee with correct department
-    $affected = DB::table('users')
-        ->where('id', $userId)
-        ->where('role', 'User')
-        ->update([
-            'role' => 'Assignee',
-            'department' => $request->department,
+    public function store(Request $request)
+    {
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'department' => 'required|in:Support,Technical,Billing,Sales',
         ]);
 
-    if ($affected) {
-        return back()->with('success', "New Assignee added to <strong>{$request->department}</strong> department!");
+        $userId = $request->user_id;
+
+        // Delete all tickets created by this user (as requester)
+        DB::table('tickets')->where('requester_id', $userId)->delete();
+
+        // Update user to Assignee with correct department
+        $affected = DB::table('users')
+            ->where('id', $userId)
+            ->where('role', 'User')
+            ->update([
+                'role' => 'Assignee',
+                'department' => $request->department,
+            ]);
+
+        if ($affected) {
+            return back()->with('success', "New Assignee added to <strong>{$request->department}</strong> department!");
+        }
+
+        return back()->with('error', 'User not found or already an assignee.');
     }
 
-    return back()->with('error', 'User not found or already an assignee.');
-}
+    public function remove($id)
+    {
+        // First: Unassign all tickets currently assigned to this assignee
+        DB::table('tickets')
+            ->where('assignee_id', $id)
+            ->whereNull('deleted_at')
+            ->update([
+                'assignee_id' => null,
+                'assigned_to' => '',
+                'assigned_at' => null,
+            ]);
 
-public function remove($id)
-{
-    DB::table('users')
-        ->where('id', $id)
-        ->where('role', 'Assignee')
-        ->update([
-            'role' => 'User',
-            'department' => null,
-        ]);
+        // Then: Convert the assignee back to regular User
+        $affected = DB::table('users')
+            ->where('id', $id)
+            ->where('role', 'Assignee')
+            ->update([
+                'role' => 'User',
+                'department' => null,
+            ]);
 
-    return back()->with('success', 'Assignee removed. User is now regular user.');
-}
+        if ($affected) {
+            return back()->with('success', 'Assignee removed successfully. All their assigned tickets are now unassigned.');
+        }
+
+        return back()->with('error', 'Assignee not found or already removed.');
+    }
 }

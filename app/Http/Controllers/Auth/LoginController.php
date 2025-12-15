@@ -11,7 +11,7 @@ class LoginController extends Controller
 {
     public function show()
     {
-        return Inertia::render("Login"); 
+        return Inertia::render("Login");
     }
 
     public function login(Request $request)
@@ -41,12 +41,17 @@ class LoginController extends Controller
         ])->onlyInput('email');
     }
 
-    public function logout(Request $request)
-    {
-        Auth::logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+   public function logout(Request $request)
+{
+    Auth::logout();
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
 
-        return redirect('/');
-    }
+    return redirect('/')->withHeaders([
+        'Cache-Control' => 'no-cache, no-store, max-age=0, must-revalidate, private',
+        'Pragma' => 'no-cache',
+        'Expires' => 'Sat, 01 Jan 2000 00:00:00 GMT',
+    ]);
+
+}
 }

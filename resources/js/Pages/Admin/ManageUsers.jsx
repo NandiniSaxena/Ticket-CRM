@@ -3,10 +3,9 @@ import { Head, Link, useForm, usePage, router } from "@inertiajs/react";
 import Dropdown from "@/Components/Dropdown";
 
 export default function ManageUsers() {
-    const { auth, users: initialUsers, flash } = usePage().props;
+    const { auth, users: initialUsers, flash, errors } = usePage().props;
     const user = auth?.user;
-
-    const [users] = React.useState(initialUsers || []);
+    const users = initialUsers || [];
     const fullName = user ? [user.first_name, user.last_name].filter(Boolean).join(" ") || "Admin" : "Admin";
     const [sidebarOpen, setSidebarOpen] = React.useState(false);
 
@@ -33,6 +32,8 @@ export default function ManageUsers() {
     const handleAdd = (e) => {
         e.preventDefault();
         addForm.post(route("admin.users.store"), {
+            preserveState: true,
+            preserveScroll: true,
             onSuccess: () => {
                 addForm.reset();
                 const modal = document.getElementById("addUserModal");
@@ -97,6 +98,7 @@ export default function ManageUsers() {
                 .sidebar .section-title { color: #888; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; padding: 15px 25px 5px; font-weight: bold; }
                 .topbar { height: 60px; background: #fff; margin-left: 250px; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; border-bottom: 1px solid #dcdcdc; position: fixed; width: calc(100% - 250px); z-index: 999; }
                 .content { margin-left: 260px; padding: 90px 30px 30px; }
+                .table-wrapper { overflow: visible; } /* Allow dropdowns to escape clipping */
                 @media (max-width: 991px) {
                     .sidebar { left: -250px; }
                     .sidebar.show { left: 0; }
@@ -105,7 +107,7 @@ export default function ManageUsers() {
             `}</style>
 
             {/* SIDEBAR */}
-             <div className={`sidebar ${sidebarOpen ? "show" : ""}`}>
+            <div className={`sidebar ${sidebarOpen ? "show" : ""}`}>
                 <h4><i className="bi bi-shield-lock"></i> Admin Panel</h4>
 
                 <Link href="/admin/dashboard"><i className="bi bi-speedometer2 me-2"></i> Dashboard</Link>
@@ -120,7 +122,6 @@ export default function ManageUsers() {
                 <Link href="/admin/admins"><i className="bi bi-shield-shaded me-2"></i> Manage Administrator</Link>
 
                 <div className="section-title">System</div>
-                {/* <Link href="/admin/settings"><i className="bi bi-gear me-2"></i> Settings</Link> */}
                 <Link href="/admin/activity-log"><i className="bi bi-clock-history me-2"></i> Activity Log</Link>
                 <Link href="/admin/profile"><i className="bi bi-person me-2"></i> My Profile</Link>
                 <Link href="/logout" className="text-danger"><i className="bi bi-box-arrow-right me-2"></i> Logout</Link>
@@ -158,19 +159,28 @@ export default function ManageUsers() {
                     </button>
                 </div>
 
+                {/* SUCCESS MESSAGE */}
                 {flash?.success && <div className="alert alert-success alert-dismissible fade show">
                     {flash.success}
                     <button type="button" className="btn-close" data-bs-dismiss="alert"></button>
                 </div>}
-                {flash?.error && <div className="alert alert-danger alert-dismissible fade show">
-                    {flash.error}
-                    <button type="button" className="btn-close" data-bs-dismiss="alert"></button>
-                </div>}
+
+                {/* ERROR MESSAGE - SHOWS WHEN EMAIL EXISTS OR INVALID */}
+                {Object.keys(errors).length > 0 && (
+                    <div className="alert alert-danger alert-dismissible fade show">
+                        <ul className="mb-0 ps-3">
+                            {Object.values(errors).map((error, i) => (
+                                <li key={i}>{error}</li>
+                            ))}
+                        </ul>
+                        <button type="button" className="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                )}
 
                 <div className="card shadow-sm">
                     <div className="card-body p-0">
                         {users.length > 0 ? (
-                            <div className="table-responsive">
+                            <div className="table-wrapper">
                                 <table className="table table-hover mb-0">
                                     <thead className="table-light">
                                         <tr>
@@ -191,32 +201,34 @@ export default function ManageUsers() {
                                                 <td>{new Date(u.created_at).toLocaleDateString()}</td>
                                                 <td><span className="badge bg-primary">{u.total_tickets || 0}</span></td>
                                                 <td>
-                                                    <Dropdown>
-                                                        <Dropdown.Trigger>
-                                                            <button type="button" className="btn btn-link text-dark p-0">
-                                                                <i className="bi bi-three-dots-vertical fs-5"></i>
-                                                            </button>
-                                                        </Dropdown.Trigger>
-                                                        <Dropdown.Content align="right">
-                                                            <button type="button" className="dropdown-item text-primary"
-                                                                onClick={() => openEdit(u)}
-                                                                data-bs-toggle="modal"
-                                                                data-bs-target={`#editModal${u.id}`}>
-                                                                Edit
-                                                            </button>
-                                                            <button type="button" className="dropdown-item"
-                                                                onClick={() => openPassModal(u)}
-                                                                data-bs-toggle="modal"
-                                                                data-bs-target={`#passModal${u.id}`}>
-                                                                Change Password
-                                                            </button>
-                                                            <hr className="dropdown-divider" />
-                                                            <button type="button" className="dropdown-item text-danger"
-                                                                onClick={() => handleDelete(u.id)}>
-                                                                Delete
-                                                            </button>
-                                                        </Dropdown.Content>
-                                                    </Dropdown>
+                                                    <div className="position-relative">
+                                                        <Dropdown>
+                                                            <Dropdown.Trigger>
+                                                                <button type="button" className="btn btn-link text-dark p-0">
+                                                                    <i className="bi bi-three-dots-vertical fs-5"></i>
+                                                                </button>
+                                                            </Dropdown.Trigger>
+                                                            <Dropdown.Content align="right">
+                                                                <button type="button" className="dropdown-item text-primary"
+                                                                    onClick={() => openEdit(u)}
+                                                                    data-bs-toggle="modal"
+                                                                    data-bs-target={`#editModal${u.id}`}>
+                                                                    Edit
+                                                                </button>
+                                                                <button type="button" className="dropdown-item"
+                                                                    onClick={() => openPassModal(u)}
+                                                                    data-bs-toggle="modal"
+                                                                    data-bs-target={`#passModal${u.id}`}>
+                                                                    Change Password
+                                                                </button>
+                                                                <hr className="dropdown-divider" />
+                                                                <button type="button" className="dropdown-item text-danger"
+                                                                    onClick={() => handleDelete(u.id)}>
+                                                                    Delete
+                                                                </button>
+                                                            </Dropdown.Content>
+                                                        </Dropdown>
+                                                    </div>
                                                 </td>
                                             </tr>
                                         ))}
