@@ -49,7 +49,7 @@ export default function Profile() {
                     width: 230px; height: 100vh; background: #1a1e21; position: fixed; top: 0; left: 0;
                     color: white; padding-top: 20px; z-index: 1000; transition: left 0.3s;
                 }
-                .sidebar a { padding: 14px 20px; display: block; color: #c9c9c9; font-size: 15px;
+                .sidebar a { padding: 14px 20px; display: block; color: #c9c9c9;
                     text-decoration: none; border-left: 3px solid transparent; }
                 .sidebar a:hover, .sidebar a.active { background: #2d3238; color: white; border-left-color: #0d6efd; }
 

@@ -11,6 +11,7 @@ export default function ActivityLog() {
         : "Admin";
 
     const [sidebarOpen, setSidebarOpen] = React.useState(false);
+
     return (
         <>
             <Head title="Activity Log - Admin Panel" />
@@ -28,8 +29,44 @@ export default function ActivityLog() {
                 .sidebar .section-title { color: #888; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; padding: 15px 25px 5px; font-weight: bold; }
                 .topbar { height: 60px; background: #fff; margin-left: 250px; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; border-bottom: 1px solid #dcdcdc; position: fixed; width: calc(100% - 250px); z-index: 999; }
                 .content { margin-left: 260px; padding: 90px 30px 30px; }
-                .activity-item { padding: 18px 0; border-bottom: 1px solid #eee; display: flex; align-items: flex-start; }
-                .activity-icon { width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; flex-shrink: 0; }
+
+                /* PERFECT TEXT WRAPPING IN ACTIVITY LOG */
+                .activity-item {
+                    padding: 18px 0;
+                    border-bottom: 1px solid #eee;
+                    display: flex;
+                    align-items: flex-start;
+                    gap: 16px;
+                }
+                .activity-icon {
+                    width: 42px;
+                    height: 42px;
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 1.3rem;
+                    flex-shrink: 0;
+                }
+                .activity-content {
+                    flex: 1;
+                    min-width: 0; /* Allows flex child to shrink properly */
+                }
+                .activity-text {
+                    word-wrap: break-word;
+                    overflow-wrap: break-word;
+                    white-space: pre-wrap;
+                    line-height: 1.6;
+                    font-size: 15px;
+                    color: #333;
+                }
+                .activity-time {
+                    display: block;
+                    margin-top: 6px;
+                    font-size: 13px;
+                    color: #888;
+                }
+
                 @media (max-width: 991px) {
                     .sidebar { left: -250px; }
                     .sidebar.show { left: 0; }
@@ -53,7 +90,6 @@ export default function ActivityLog() {
                 <Link href="/admin/admins"><i className="bi bi-shield-shaded me-2"></i> Manage Administrator</Link>
 
                 <div className="section-title">System</div>
-                {/* <Link href="/admin/settings"><i className="bi bi-gear me-2"></i> Settings</Link> */}
                 <Link href="/admin/activity-log"><i className="bi bi-clock-history me-2"></i> Activity Log</Link>
                 <Link href="/admin/profile"><i className="bi bi-person me-2"></i> My Profile</Link>
                 <Link href="/logout" className="text-danger"><i className="bi bi-box-arrow-right me-2"></i> Logout</Link>
@@ -95,12 +131,15 @@ export default function ActivityLog() {
                         {activities.length > 0 ? (
                             activities.map((act, index) => (
                                 <div key={index} className="activity-item">
-                                    <div className={`activity-icon ${act.color} text-white me-3`}>
+                                    <div className={`activity-icon ${act.color} text-white`}>
                                         <i className={`bi ${act.icon}`}></i>
                                     </div>
-                                    <div className="flex-grow-1">
-                                        <div dangerouslySetInnerHTML={{ __html: act.text }} />
-                                        <small className="text-muted">
+                                    <div className="activity-content">
+                                        <div
+                                            className="activity-text"
+                                            dangerouslySetInnerHTML={{ __html: act.text }}
+                                        />
+                                        <small className="activity-time">
                                             {new Date(act.time).toLocaleDateString("en-US", {
                                                 day: "2-digit",
                                                 month: "short",

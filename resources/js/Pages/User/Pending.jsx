@@ -66,7 +66,6 @@ export default function Pending() {
                         padding: 14px 20px;
                         display: block;
                         color: #c9c9c9;
-                        font-size: 15px;
                         text-decoration: none;
                         border-left: 3px solid transparent;
                     }

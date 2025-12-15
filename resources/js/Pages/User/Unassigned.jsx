@@ -35,7 +35,7 @@ export default function Unassigned() {
                 }
                 .sidebar h4 { text-align: center; margin-bottom: 30px; font-weight: bold; }
                 .sidebar a {
-                    padding: 14px 20px; display: block; color: #c9c9c9; font-size: 15px;
+                    padding: 14px 20px; display: block; color: #c9c9c9;
                     text-decoration: none; border-left: 3px solid transparent;
                 }
                 .sidebar a:hover, .sidebar a.active {
@@ -171,55 +171,68 @@ export default function Unassigned() {
                                             </tr>
                                         ))}
 
-                                        {tickets.map((t) => (
-                                            <div className="modal fade" id={`ticketModal${t.id}`} tabIndex="-1" key={`modal-${t.id}`}>
-                                                <div className="modal-dialog modal-lg">
-                                                    <div className="modal-content">
-                                                        <div className="modal-header">
-                                                            <h5 className="modal-title">
-                                                                <i className="bi bi-ticket-perforated"></i>
-                                                                &nbsp; Ticket #{t.id} - {t.subject}
-                                                            </h5>
-                                                            <button className="btn-close" data-bs-dismiss="modal"></button>
-                                                        </div>
+                                        {/* MODAL - SUBJECT WRAPS PERFECTLY */}
+{tickets.map((t) => (
+    <div className="modal fade" id={`ticketModal${t.id}`} tabIndex="-1" key={`modal-${t.id}`}>
+        <div className="modal-dialog modal-lg">
+            <div className="modal-content">
+                <div className="modal-header text-center flex-column">
+                    <h5 className="modal-title w-100">
+                        <i className="bi bi-ticket-perforated"></i>
+                        &nbsp; Ticket #{t.id}
+                    </h5>
+                    <div
+                        className="mt-2 px-4"
+                        style={{
+                            fontSize: "1.1rem",
+                            fontWeight: "600",
+                            wordBreak: "break-word",
+                            whiteSpace: "normal",
+                            lineHeight: "1.4"
+                        }}
+                    >
+                        {t.subject}
+                    </div>
+                    <button className="btn-close position-absolute end-0 top-0 mt-3 me-4" data-bs-dismiss="modal"></button>
+                </div>
 
-                                                        <div className="modal-body">
-                                                            <div className="row">
-                                                                <div className="col-md-8">
-                                                                    <h6><strong>Full Description</strong></h6>
-                                                                    <div className="modal-description-box">
-                                                                        {t.description}
-                                                                    </div>
-                                                                </div>
+                <div className="modal-body">
+                    <div className="row">
+                        <div className="col-md-8">
+                            <h6><strong>Full Description</strong></h6>
+                            <div className="modal-description-box">
+                                {t.description}
+                            </div>
+                        </div>
 
-                                                                <div className="col-md-4">
-                                                                    <div className="bg-white p-3 border rounded shadow-sm">
-                                                                        <p><strong>Status:</strong> <span className="badge bg-secondary">Unassigned</span></p>
-                                                                        <p>
-                                                                            <strong>Priority:</strong>
-                                                                            <span className={`text-${
-                                                                                t.priority === "high"
-                                                                                    ? "danger"
-                                                                                    : t.priority === "medium"
-                                                                                    ? "warning"
-                                                                                    : "success"
-                                                                            }`}> {t.priority}</span>
-                                                                        </p>
-                                                                        <p><strong>Team:</strong> {t.team}</p>
-                                                                        <p><strong>Created:</strong> {new Date(t.created_at).toLocaleString()}</p>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
+                        <div className="col-md-4">
+                            <div className="bg-white p-3 border rounded shadow-sm">
+                                <p><strong>Status:</strong> <span className="badge bg-secondary">Unassigned</span></p>
+                                <p>
+                                    <strong>Priority:</strong>
+                                    <span className={`text-${
+                                        t.priority === "high"
+                                            ? "danger"
+                                            : t.priority === "medium"
+                                            ? "warning"
+                                            : "success"
+                                    }`}> {t.priority.charAt(0).toUpperCase() + t.priority.slice(1)}</span>
+                                </p>
+                                <p><strong>Team:</strong> {t.team || "Not Set"}</p>
+                                <p><strong>Created:</strong> {new Date(t.created_at).toLocaleString()}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-                                                        <div className="modal-footer">
-                                                            <Link href="/alltickets" className="btn btn-primary">View All Tickets</Link>
-                                                            <button className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        ))}
+                <div className="modal-footer">
+                    <Link href="/alltickets" className="btn btn-primary">View All Tickets</Link>
+                    <button className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+))}
                                     </tbody>
                                 </table>
                             </div>

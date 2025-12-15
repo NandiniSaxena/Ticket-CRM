@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Head, Link, usePage, router } from "@inertiajs/react";
 import Dropdown from "@/Components/Dropdown";
 
@@ -6,75 +6,52 @@ export default function CreateTicket() {
     const { auth, flash, errors } = usePage().props;
     const user = auth?.user || {};
 
+    const fullName = [user.first_name, user.last_name].filter(Boolean).join(" ") || "User";
+    const [sidebarOpen, setSidebarOpen] = useState(false);
+    const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
+
     const [form, setForm] = useState({
         subject: "",
         description: "",
         priority: "low",
         team: "Support",
     });
-    const fullName = [user.first_name, user.last_name].filter(Boolean).join(" ") || "User";
-    const [sidebarOpen, setSidebarOpen] = useState(false);
-    const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
-
-    const [successMessage, setSuccessMessage] = useState("");
 
     const submit = (e) => {
         e.preventDefault();
 
-        if (!form.subject.trim() || !form.description.trim()) {
-            alert("Subject and description are required!");
-            return;
-        }
-
         router.post("/tickets", form, {
+            preserveState: true,
+            preserveScroll: true,
             onSuccess: () => {
-                setSuccessMessage("Your ticket has been submitted successfully!");
+                // Optional: show success or redirect
+                // Inertia will handle flash.success automatically
+            },
+            onError: (errors) => {
+                // Errors are now available via usePage().props.errors
+                console.log(errors);
             }
         });
     };
-
-    useEffect(() => {
-        const script = document.createElement("script");
-        script.src = "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js";
-        script.async = true;
-        document.body.appendChild(script);
-    }, []);
 
     return (
         <>
             <Head title="Create New Ticket - Helpdesk" />
 
-            <link
-                rel="stylesheet"
-                href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-            />
-            <link
-                rel="stylesheet"
-                href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
-            />
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
 
             <style>{`
                 body { background: #f0f2f5; font-family: 'Segoe UI', Arial, sans-serif; margin:0; }
-                .sidebar {
-                    width: 230px; height: 100vh; background: #1a1e21; position: fixed; top: 0; left: 0;
-                    color: white; padding-top: 20px; z-index: 1000; transition: 0.3s;
-                }
+                .sidebar { width: 230px; height: 100vh; background: #1a1e21; position: fixed; top: 0; left: 0; color: white; padding-top: 20px; z-index: 1000; transition: 0.3s; }
                 .sidebar h4 { text-align: center; margin-bottom: 30px; font-weight: bold; }
-                .sidebar a {
-                    padding: 14px 20px; display: block; color: #c9c9c9; font-size: 15px;
-                    text-decoration: none; border-left: 3px solid transparent;
-                }
-                .sidebar a:hover, .sidebar a.active {
-                    background: #2d3238; color: white; border-left-color: #0d6efd;
-                }
-                .topbar {
-                    height: 60px; background: #fff; margin-left: 230px; display: flex;
-                    align-items: center; justify-content: space-between; padding: 0 25px;
-                    border-bottom: 1px solid #dcdcdc; position: fixed; width: calc(100% - 230px); z-index: 999;
-                }
+                .sidebar a { padding: 14px 20px; display: block; color: #c9c9c9; text-decoration: none; border-left: 3px solid transparent; }
+                .sidebar a:hover, .sidebar a.active { background: #2d3238; color: white; border-left-color: #0d6efd; }
+                .topbar { height: 60px; background: #fff; margin-left: 230px; display: flex; align-items: center; justify-content: space-between; padding: 0 25px; border-bottom: 1px solid #dcdcdc; position: fixed; width: calc(100% - 230px); z-index: 999; }
                 .content { margin-left: 240px; padding: 90px 30px 30px; }
                 .card { border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
                 .form-label { font-weight: 600; color: #333; }
+                .text-danger { font-size: 0.875rem; margin-top: 0.25rem; }
                 @media (max-width: 991px) {
                     .sidebar { left: -250px; width: 230px; }
                     .sidebar.show { left: 0; }
@@ -96,36 +73,27 @@ export default function CreateTicket() {
 
             <div className="topbar">
                 <div className="d-flex align-items-center">
-                    <span className="hamburger d-lg-none" onClick={toggleSidebar}>&#9776;</span>
+                    <span className="hamburger d-lg-none" onClick={toggleSidebar}>☰</span>
                     <strong>Create New Ticket</strong>
                 </div>
 
                 <div className="d-flex align-items-center">
                     <span className="fw-bold me-3">{fullName}</span>
-                     <Dropdown>
-            <Dropdown.Trigger>
-                <button
-                    type="button"
-                    className="btn btn-link text-dark p-0 border-0"
-                    style={{ background: "transparent", lineHeight: "1" }}
-                >
-                    <i className="bi bi-person-circle fs-3"></i>
-                </button>
-            </Dropdown.Trigger>
-
-            <Dropdown.Content align="right" width="220px">
-                <div className="px-4 py-3 border-bottom text-center">
-                    <div className="fw-bold">{user.name}</div>
-                    <small className="text-muted">{user.email}</small>
-                </div>
-                <Dropdown.Link href="/profile">
-                    My Profile
-                </Dropdown.Link>
-                <Dropdown.Link href="/logout" method="post" as="button" className="text-danger">
-                    Logout
-                </Dropdown.Link>
-            </Dropdown.Content>
-        </Dropdown>
+                    <Dropdown>
+                        <Dropdown.Trigger>
+                            <button type="button" className="btn btn-link text-dark p-0 border-0">
+                                <i className="bi bi-person-circle fs-3"></i>
+                            </button>
+                        </Dropdown.Trigger>
+                        <Dropdown.Content align="right" width="220px">
+                            <div className="px-4 py-3 border-bottom text-center">
+                                <div className="fw-bold">{fullName}</div>
+                                <small className="text-muted">{user.email}</small>
+                            </div>
+                            <Dropdown.Link href="/profile">My Profile</Dropdown.Link>
+                            <Dropdown.Link href="/logout" method="post" as="button" className="text-danger">Logout</Dropdown.Link>
+                        </Dropdown.Content>
+                    </Dropdown>
                 </div>
             </div>
 
@@ -136,24 +104,19 @@ export default function CreateTicket() {
                     </div>
 
                     <div className="card-body p-4">
-
-                        {successMessage && (
-                            <div className="alert alert-success text-center fs-5">
-                                {successMessage}
-
+                        {/* Flash Success Message */}
+                        {flash?.success && (
+                            <div className="alert alert-success text-center fs-5 mb-4">
+                                {flash.success}
                                 <div className="mt-3">
-                                    <Link href="/alltickets" className="btn btn-success">
-                                        Go to All Tickets
-                                    </Link>
-
-                                    <Link href="/dashboard" className="btn btn-outline-primary ms-2">
-                                        Back to Dashboard
-                                    </Link>
+                                    <Link href="/alltickets" className="btn btn-success">Go to All Tickets</Link>
+                                    <Link href="/dashboard" className="btn btn-outline-primary ms-2">Back to Dashboard</Link>
                                 </div>
                             </div>
                         )}
 
-                        {!successMessage && (
+                        {/* Form - Only show if no success */}
+                        {!flash?.success && (
                             <form onSubmit={submit}>
                                 <div className="row">
                                     <div className="col-md-8">
@@ -161,26 +124,30 @@ export default function CreateTicket() {
                                             <label className="form-label">Subject *</label>
                                             <input
                                                 type="text"
-                                                className="form-control form-control-lg"
+                                                className={`form-control form-control-lg ${errors.subject ? 'is-invalid' : ''}`}
                                                 value={form.subject}
                                                 onChange={(e) => setForm({ ...form, subject: e.target.value })}
+                                                placeholder="Brief summary of your issue"
                                             />
+                                            {errors.subject && <div className="text-danger">{errors.subject}</div>}
                                         </div>
 
                                         <div className="mb-3">
                                             <label className="form-label">Description *</label>
                                             <textarea
-                                                rows="6"
-                                                className="form-control"
+                                                rows="8"
+                                                className={`form-control ${errors.description ? 'is-invalid' : ''}`}
                                                 value={form.description}
                                                 onChange={(e) => setForm({ ...form, description: e.target.value })}
+                                                placeholder="Provide detailed information about your issue..."
                                             ></textarea>
+                                            {errors.description && <div className="text-danger">{errors.description}</div>}
                                         </div>
                                     </div>
 
                                     <div className="col-md-4">
-                                        <div className="bg-light p-3 rounded">
-                                            <h6 className="fw-bold mb-3">Ticket Details</h6>
+                                        <div className="bg-light p-4 rounded h-100">
+                                            <h6 className="fw-bold mb-4">Ticket Details</h6>
 
                                             <div className="mb-3">
                                                 <label className="form-label">Priority</label>
@@ -195,7 +162,7 @@ export default function CreateTicket() {
                                                 </select>
                                             </div>
 
-                                            <div className="mb-3">
+                                            <div className="mb-4">
                                                 <label className="form-label">Team / Department</label>
                                                 <select
                                                     className="form-select"
@@ -211,21 +178,22 @@ export default function CreateTicket() {
 
                                             <hr />
 
-                                            <p className="text-muted small">
-                                                <strong>Requester:</strong> {user.name} <br />
+                                            <div className="text-muted small">
+                                                <strong>Requester:</strong> {fullName}<br />
                                                 <strong>Email:</strong> {user.email}
-                                            </p>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div className="mt-3">
-                                    <button className="btn btn-primary btn-lg px-4">Submit Ticket</button>
-                                    <Link href="/dashboard" className="btn btn-secondary btn-lg ms-2">Cancel</Link>
+                                <div className="mt-4 text-end">
+                                    <Link href="/dashboard" className="btn btn-secondary btn-lg me-3">Cancel</Link>
+                                    <button type="submit" className="btn btn-primary btn-lg px-5">
+                                        Submit Ticket
+                                    </button>
                                 </div>
                             </form>
                         )}
-
                     </div>
                 </div>
             </div>

@@ -237,6 +237,64 @@ export default function AssigneeDashboard() {
                             </nav>
                         </div>
                     )}
+                    {showModal && selectedTicket && (
+                <div className="modal fade show" style={{display: "block", backgroundColor: "rgba(0,0,0,0.5)"}} tabIndex="-1">
+                    <div className="modal-dialog modal-lg">
+                        <div className="modal-content border-0 shadow-lg">
+                            <div className="modal-header text-white" style={{background: "linear-gradient(135deg, #667eea, #764ba2)"}}>
+                                <div className="w-100 text-center">
+                                    <h5 className="modal-title mb-2">
+                                        <strong>Ticket #{selectedTicket.id}</strong>
+                                    </h5>
+                                    <div style={{fontSize: "1.1rem", fontWeight: "500", wordWrap: "break-word", maxWidth: "90%", margin: "0 auto"}}>
+                                        {selectedTicket.subject}
+                                    </div>
+                                </div>
+                                <button type="button" className="btn-close btn-close-white" onClick={() => setShowModal(false)}
+                                    style={{position: "absolute", right: "20px", top: "20px"}}></button>
+                            </div>
+                            <div className="modal-body">
+                                <div className="row mb-4">
+                                    <div className="col-md-6">
+                                        <p><strong>Requester:</strong> {selectedTicket.req_first} {selectedTicket.req_last}</p>
+                                        <p><strong>Created:</strong> {new Date(selectedTicket.created_at).toLocaleDateString('en-GB')}</p>
+                                    </div>
+                                    <div className="col-md-6 text-md-end">
+                                        <p><strong>Priority:</strong>
+                                            <span className={`badge bg-${selectedTicket.priority === 'high' ? 'danger' : selectedTicket.priority === 'medium' ? 'warning' : 'secondary'} ms-2`}>
+                                                {selectedTicket.priority.charAt(0).toUpperCase() + selectedTicket.priority.slice(1)}
+                                            </span>
+                                        </p>
+                                        <p><strong>Status:</strong>
+                                            <span className={`badge ${getStatusColor(selectedTicket.status)} ms-2`}>
+                                                {getStatusText(selectedTicket.status)}
+                                            </span>
+                                        </p>
+                                    </div>
+                                </div>
+                                <hr />
+                                <h6>Description</h6>
+                                <div className="bg-light p-4 rounded border"
+                                    style={{
+                                        minHeight: "150px",
+                                        lineHeight: "1.8",
+                                        whiteSpace: "pre-wrap",
+                                        wordWrap: "break-word",
+                                        overflowWrap: "break-word"
+                                    }}
+                                >
+                                    {selectedTicket.description || <em className="text-muted">No description provided.</em>}
+                                </div>
+                            </div>
+                            <div className="modal-footer">
+                                <button type="button" className="btn btn-secondary" onClick={() => setShowModal(false)}>
+                                    Close
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
                 </div>
             </div>
 

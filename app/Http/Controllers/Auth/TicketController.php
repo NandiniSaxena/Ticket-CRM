@@ -26,9 +26,10 @@ class TicketController extends Controller
 
     $userId = $request->user()->id;
 
-    // Check for duplicate ticket by same user
+    // Check for duplicate by SAME USER with identical subject OR description
     $duplicate = DB::table('tickets')
         ->where('requester_id', $userId)
+        ->whereNull('deleted_at')
         ->where(function ($query) use ($request) {
             $query->where('subject', $request->subject)
                   ->orWhere('description', $request->description);
@@ -36,35 +37,26 @@ class TicketController extends Controller
         ->exists();
 
     if ($duplicate) {
-        return redirect()->back()->with('error', 'We cannot create the ticket with same subject or description.');
+        return back()->withErrors([
+            'subject' => 'You already have a ticket with the same subject or description.',
+            'description' => 'You already have a ticket with the same subject or description.',
+        ])->withInput();
     }
 
     $ticketId = DB::table('tickets')->insertGetId([
-        'subject' => $request->subject,
-        'description' => $request->description,
-        'priority' => $request->priority ?: 'medium',
-        'team' => $request->team ?: 'Support',
-        'requester_id' => $userId,
-        'status' => 'pending',
-        'assigned_to' => '',
-        'created_at' => now(),
+        'subject'       => $request->subject,
+        'description'   => $request->description,
+        'priority'      => $request->priority ?? 'medium',
+        'team'          => $request->team ?? 'Support',
+        'requester_id'  => $userId,
+        'status'        => 'pending',
+        'assigned_to'   => '',
+        'created_at'    => now(),
+        'updated_at'    => now(),
     ]);
 
-    return redirect()->back()->with('success', "Ticket created successfully! ID: #{$ticketId}");
+    return back()->with('success', "Ticket created successfully! Ticket ID: #{$ticketId}");
 }
-
-// public function allTickets()
-// {
-//     $tickets = DB::table('tickets')
-//         ->orderBy('created_at', 'desc')
-//         ->get();
-
-//     return Inertia::render('User/AllTickets', [
-//         'tickets' => $tickets
-//     ]);
-// }
-
-
 public function allTickets()
 {
     $tickets = DB::table('tickets')
@@ -73,7 +65,6 @@ public function allTickets()
         ->orderByDesc('created_at')
         ->get();
 
-    // Get unique teams from DB
     $teams = DB::table('tickets')->distinct()->pluck('team')->filter()->values();
 
     return Inertia::render('User/AllTickets', [
@@ -81,37 +72,6 @@ public function allTickets()
         'teams'   => $teams->count() > 0 ? $teams : ['Support', 'Technical', 'Billing','Sales'],
     ]);
 }
-// public function update(Request $request, $id)
-// {
-//     $request->validate([
-//         'subject' => 'required|string|max:255',
-//         'description' => 'required|string',
-//         'priority' => 'nullable|in:low,medium,high',
-//         'team' => 'nullable|string|max:50',
-//         'status' => 'required|in:pending,inprogress,onhold,completed',
-//     ]);
-
-//     DB::table('tickets')->where('id', $id)->update([
-//         'subject' => $request->subject,
-//         'description' => $request->description,
-//         'priority' => $request->priority,
-//         'team' => $request->team,
-//         'status' => $request->status,
-//         'updated_at' => now(),
-//     ]);
-
-//     return redirect()->back()->with('success', 'Ticket updated successfully.');
-// }
-
-
-
-// public function delete($id)
-// {
-//     DB::table('tickets')->where('id', $id)->delete();
-
-//     return redirect()->back()->with('success', 'Ticket deleted successfully.');
-// }
-
 
 public function update(Request $request, $id)
 {

@@ -83,11 +83,37 @@ export default function AllTickets() {
 
             <style>{`
                 body { background: #f0f2f5; font-family: 'Segoe UI', Arial, sans-serif; }
-                .sidebar { width: 230px; height: 100vh; background: #1a1e21; position: fixed; top: 0; left: 0;
-                    color: white; padding-top: 20px; z-index: 1000; transition: 0.3s; }
-                .sidebar a { padding: 14px 20px; display: block; color: #c9c9c9; font-size: 15px;
-                    text-decoration: none; border-left: 3px solid transparent; }
-                .sidebar a:hover, .sidebar a.active { background: #2d3238; color: white; border-left-color: #0d6efd; }
+                .sidebar {
+                    width: 230px;
+                    height: 100vh;
+                    background: #1a1e21;
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    color: white;
+                    padding-top: 20px;
+                    z-index: 1000;
+                    transition: 0.3s;
+                }
+
+                .sidebar h4 {
+                    text-align: center;
+                    margin-bottom: 30px;
+                    font-weight: bold;
+                }
+
+                .sidebar a {
+                    padding: 14px 20px;
+                    display: block;
+                    color: #c9c9c9;
+                    text-decoration: none;
+                    border-left: 3px solid transparent;
+                }
+                .sidebar a:hover, .sidebar a.active {
+                    background: #2d3238;
+                    color: white;
+                    border-left-color: #0d6efd;
+                }
                 .topbar { height: 60px; background: #fff; margin-left: 230px; display: flex;
                     align-items: center; justify-content: space-between; padding: 0 25px;
                     border-bottom: 1px solid #dcdcdc; position: fixed; width: calc(100% - 230px); z-index: 999; }
