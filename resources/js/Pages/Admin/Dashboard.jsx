@@ -14,7 +14,7 @@ export default function AdminDashboard() {
         <>
             <Head title="Admin Dashboard - Helpdesk" />
 
-            {/* Bootstrap CSS + Icons */}
+
             <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
             <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
 
@@ -89,7 +89,6 @@ export default function AdminDashboard() {
                 <div className="d-flex align-items-center">
                     <span className="fw-bold me-3 text-primary">{fullName} (Admin)</span>
 
-                    {/* BREEZE DROPDOWN — WORKS 100% */}
                     <Dropdown>
                         <Dropdown.Trigger>
                             <button type="button" className="btn btn-link text-dark p-0">

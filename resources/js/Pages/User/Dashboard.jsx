@@ -22,7 +22,7 @@ export default function Dashboard() {
         <>
             <Head title="Dashboard - Helpdesk" />
 
-            {/* Bootstrap CSS */}
+
             <link
                 rel="stylesheet"
                 href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
@@ -195,7 +195,7 @@ export default function Dashboard() {
                     </div>
                 </div>
 
-                {/* ==== Recent Tickets Table ==== */}
+                {/* Recent Tickets Table */}
                 <div className="card shadow-sm">
                     <div className="card-header bg-white">
                         <h5 className="mb-0">Recent Tickets</h5>
@@ -287,7 +287,6 @@ export default function Dashboard() {
                     </div>
                 </div>
 
-                {/* ==== MODALS ==== */}
                 {recentTickets.map((t) => {
                     const statusBadge =
                         t.status === "completed"
@@ -349,7 +348,6 @@ export default function Dashboard() {
                 })}
             </div>
 
-            {/* Bootstrap JS */}
             <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
         </>
     );

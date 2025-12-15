@@ -37,7 +37,7 @@ export default function ActivityLog() {
                 }
             `}</style>
 
-            {/* EXACT SAME SIDEBAR */}
+            {/* SIDEBAR */}
             <div className={`sidebar ${sidebarOpen ? "show" : ""}`}>
                 <h4><i className="bi bi-shield-lock"></i> Admin Panel</h4>
 

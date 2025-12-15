@@ -93,7 +93,7 @@ export default function AssigneeDashboard() {
                 <Link href="/logout" className="text-warning">Logout</Link>
             </div>
 
-            {/* TOPBAR - FIXED DROPDOWN */}
+            {/* TOPBAR*/}
             <div className="topbar">
                 <div><strong>Agent / My Workspace</strong></div>
                 <div className="d-flex align-items-center">

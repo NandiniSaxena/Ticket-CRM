@@ -96,7 +96,7 @@ export default function AdminAllTickets() {
         <>
             <Head title="All Tickets - Admin Panel" />
 
-            {/* Bootstrap CSS + Icons */}
+
             <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
             <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
 
@@ -222,13 +222,13 @@ export default function AdminAllTickets() {
         </Dropdown.Trigger>
 
         <Dropdown.Content align="right">
-            {/* EDIT – NOW WORKS 100% */}
+
             <button
                 type="button"
                 className="dropdown-item text-primary"
                 onClick={() => {
                     openEdit(t);
-                    // Manually open Bootstrap modal
+                    
                     const modal = new bootstrap.Modal(document.getElementById(`editModal${t.id}`));
                     modal.show();
                 }}
